@@ -55,8 +55,40 @@ class DetalheProduto extends StatelessWidget {
             ? Image.network(
                 produto.imagemUrl!,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) =>
+                loadingBuilder: (context, child, loadingProgress) {
+                  if (loadingProgress == null) return child;
+                  return Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      _buildImagePlaceholder(),
+                      const Center(
+                        child: CircularProgressIndicator(
+                          color: Colors.white54,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) => Stack(
+                  fit: StackFit.expand,
+                  children: [
                     _buildImagePlaceholder(),
+                    const Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.broken_image_outlined,
+                              color: Colors.white54, size: 48),
+                          SizedBox(height: 8),
+                          Text(
+                            'Não foi possível carregar a imagem',
+                            style: TextStyle(color: Colors.white54, fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               )
             : _buildImagePlaceholder(),
       ),
